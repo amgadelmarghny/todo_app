@@ -47,13 +47,18 @@ class _HomeViewState extends State<HomeView> {
                 scaffoldKey.currentState!.showBottomSheet((context) {
                   return const TaskSheet();
                 });
+                fabIcon = Icons.add;
+                isBottomSheetShow = false;
+              } else {
+                Navigator.pop(context);
+                fabIcon = Icons.edit;
+                isBottomSheetShow = true;
               }
             },
-            child: const Icon(Icons.add),
+            child: Icon(fabIcon),
           ),
         );
       },
     );
   }
 }
-
