@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo_app/cubit/app_cubit.dart';
+import 'package:todo_app/views/widget_componants/task_sheet.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({
@@ -44,10 +45,7 @@ class _HomeViewState extends State<HomeView> {
             onPressed: () {
               if (isBottomSheetShow) {
                 scaffoldKey.currentState!.showBottomSheet((context) {
-                  return const SingleChildScrollView(
-                      child: Column(
-                    children: [],
-                  ));
+                  return const TaskSheet();
                 });
               }
             },
@@ -58,3 +56,4 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 }
+
