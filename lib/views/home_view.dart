@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:todo_app/componants/snack_bar.dart';
 import 'package:todo_app/cubit/app_cubit.dart';
 import 'package:todo_app/views/widget_componants/task_sheet.dart';
 
@@ -23,6 +24,9 @@ class _HomeViewState extends State<HomeView> {
       listener: (context, state) {
         if (state is InsertIntoDatabaseState) {
           Navigator.pop(context);
+        }
+        if (state is FailurState) {
+          customSnackBar(context: context, text: state.err);
         }
       },
       builder: (context, state) {

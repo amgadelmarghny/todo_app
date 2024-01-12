@@ -64,7 +64,6 @@ class AppCubit extends Cubit<AppState> {
     }).catchError((err) {
       emit(FailurState('Failed to Creat into Database : $err'));
       debugPrint('Failed to Creat into Database : $err');
-      
     });
   }
 
@@ -74,28 +73,32 @@ class AppCubit extends Cubit<AppState> {
       required String time,
       required String date}) async {
     await database!.transaction((txn) async {
-      await txn.rawInsert(
-          'INSERT INTO tasks(title, time, date, status) VALUES("$title", "$time","$date", "new")');
-    }).then((value) {
-      debugPrint('Database inserted successfully : $value');
-      getFromDatabase(database);
-      emit(InsertIntoDatabaseState());
-    }).catchError((err) {
-      emit(FailurState('Failed to insert into Database : $err'));
-      debugPrint('Failed to insert into Database : $err');
+      await txn
+          .rawInsert(
+              'INSERT INTO tasks(title, time, date, status) VALUES("$title", "$time","$date", "new")')
+          .then((value) {
+        print(database);
+        debugPrint('Database inserted successfully : $value');
+        emit(InsertIntoDatabaseState());
+        getFromDatabase(database);
+      }).catchError((err) {
+        emit(FailurState('Failed to insert into Database : $err'));
+        debugPrint('Failed to insert into Database : $err');
+      });
     });
   }
 
   //Get the tasks
   void getFromDatabase(database) {
+    addTaskModelList.clear();
+    doneTaskModelList.clear();
+    archiveTaskModelList.clear();
     database!.rawQuery('SELECT * FROM tasks').then((value) {
-      addTaskModelList.clear();
-      doneTaskModelList.clear();
-      archiveTaskModelList.clear();
+      print(value);
       for (var list in value) {
-        if (list['status'] == ['new']) {
+        if (list['status'] == 'new') {
           addTaskModelList.add(TaskModel.fromSQflite(list));
-        } else if (list['status'] == ['done']) {
+        } else if (list['status'] == 'done') {
           doneTaskModelList.add(TaskModel.fromSQflite(list));
         } else {
           archiveTaskModelList.add(TaskModel.fromSQflite(list));
