@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:todo_app/model/tast_model.dart';
 import 'package:todo_app/views/widget_componants/archive_body.dart';
 import 'package:todo_app/views/widget_componants/done_body.dart';
 import 'package:todo_app/views/widget_componants/tasks_body.dart';
@@ -26,8 +27,13 @@ class AppCubit extends Cubit<AppState> {
     curruntIndex = index;
     emit(ChangeNavBarState());
   }
+
   ///////////////////
   Database? database;
+  String? title, time, date;
+  List<TaskModel> addTaskModelList = [];
+  List<TaskModel> doneTaskModelList = [];
+  List<TaskModel> archiveTaskModelList = [];
 
   void creatDatabase() async {
     // open the database
@@ -46,6 +52,7 @@ class AppCubit extends Cubit<AppState> {
     ).then((value) {
       emit(CreatDatabaseState());
     }).catchError((err) {
+      emit(FailurState('Failed to insert into Database : $err'));
       debugPrint('Failed to insert into Database : $err');
     });
   }
@@ -60,6 +67,7 @@ class AppCubit extends Cubit<AppState> {
       debugPrint('Database inserted successfully : $value');
       emit(InsertIntoDatabaseState());
     }).catchError((err) {
+      emit(FailurState('Failed to insert into Database : $err'));
       debugPrint('Failed to insert into Database : $err');
     });
   }
@@ -67,9 +75,21 @@ class AppCubit extends Cubit<AppState> {
   //Get the tasks
   void getFromDatabase() {
     database!.rawQuery('SELECT * FROM tasks').then((value) {
-      for (var list in value) {}
+      addTaskModelList.clear();
+      doneTaskModelList.clear();
+      archiveTaskModelList.clear();
+      for (var list in value) {
+        if (list['status'] == ['new']) {
+          addTaskModelList.add(TaskModel.fromSQflite(list));
+        } else if (list['status'] == ['done']) {
+          doneTaskModelList.add(TaskModel.fromSQflite(list));
+        } else {
+          archiveTaskModelList.add(TaskModel.fromSQflite(list));
+        }
+      }
       emit(GetFromDatabaseState());
     }).catchError((err) {
+      emit(FailurState('Failed to fetch data from Database : $err'));
       debugPrint('Failed to fetch data from Database : $err');
     });
   }
@@ -81,12 +101,16 @@ class AppCubit extends Cubit<AppState> {
       [status, id],
     ).then((value) {
       emit(UpdateDatabaseState());
+    }).catchError((err) {
+      emit(FailurState('Error when update task : $err'));
     });
   }
 
   void deleteFromDatabase({required int id}) {
     database!.rawDelete('DELETE FROM tasks WHERE id = ?', [id]).then((value) {
       emit(DeletFromDatabaseState());
+    }).catchError((err) {
+      emit(FailurState('Error when delet task : $err'));
     });
   }
 }
