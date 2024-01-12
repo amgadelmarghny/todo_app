@@ -98,6 +98,7 @@ class AppCubit extends Cubit<AppState> {
       for (var list in value) {
         if (list['status'] == 'new') {
           addTaskModelList.add(TaskModel.fromSQflite(list));
+          print('idddd::: ${addTaskModelList[0].id}');
         } else if (list['status'] == 'done') {
           doneTaskModelList.add(TaskModel.fromSQflite(list));
         } else {
@@ -112,11 +113,12 @@ class AppCubit extends Cubit<AppState> {
   }
 
   // Update tasks
-  void updateDatabase({required String status, required int id}) {
-    database!.rawUpdate(
+  void updateDatabase({required String status, required int id}) async {
+    await database!.rawUpdate(
       'UPDATE tasks SET status = ? WHERE id = ?',
       [status, id],
     ).then((value) {
+      getFromDatabase(database);
       emit(UpdateDatabaseState());
     }).catchError((err) {
       emit(FailurState('Error when update task : $err'));
@@ -126,6 +128,7 @@ class AppCubit extends Cubit<AppState> {
   void deleteFromDatabase({required int id}) {
     database!.rawDelete('DELETE FROM tasks WHERE id = ?', [id]).then((value) {
       emit(DeletFromDatabaseState());
+      getFromDatabase(database);
     }).catchError((err) {
       emit(FailurState('Error when delet task : $err'));
     });

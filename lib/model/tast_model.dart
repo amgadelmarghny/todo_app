@@ -18,6 +18,6 @@ class TaskModel {
         time: data['time'],
         date: data['date'],
         status: data['status'],
-        id: data['id,']);
+        id: data['id']);
   }
 }

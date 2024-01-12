@@ -9,7 +9,8 @@ class DoneTasks extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<TaskModel>taskModelList = BlocProvider.of<AppCubit>(context).doneTaskModelList;
+    List<TaskModel> taskModelList =
+        BlocProvider.of<AppCubit>(context).doneTaskModelList;
     return TaskItemListView(taskModelList: taskModelList);
   }
 }
