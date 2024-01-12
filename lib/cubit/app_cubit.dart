@@ -30,12 +30,15 @@ class AppCubit extends Cubit<AppState> {
     emit(NavBarState());
   }
 
+<<<<<<< HEAD
   void changeBottomSheet(IconData iconData, bool isShown) {
     fabIcon = iconData;
     isBottomSheetShow = isShown;
     emit(BottomSheetState());
   }
 
+=======
+>>>>>>> b662048b32b1268cfd207fa787442ce91301a088
   ///////////////////
   Database? database;
   String? title, time, date;

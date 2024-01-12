@@ -18,7 +18,11 @@ final class UpdateDatabaseState extends AppState {}
 
 final class FailurState extends AppState {
   final String err;
+<<<<<<< HEAD
   FailurState(this.err);
+=======
+   FailurState(this.err);
+>>>>>>> b662048b32b1268cfd207fa787442ce91301a088
 }
 
 final class DeletFromDatabaseState extends AppState {}
