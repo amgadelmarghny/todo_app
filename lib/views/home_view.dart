@@ -14,8 +14,6 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
-  bool isBottomSheetShow = true;
-  IconData fabIcon = Icons.edit;
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +31,7 @@ class _HomeViewState extends State<HomeView> {
           body: appCubit.bodyScreens[appCubit.curruntIndex],
           bottomNavigationBar: BottomNavigationBar(
             onTap: (index) {
-              appCubit.changButtonNavBar(index);
+              appCubit.changeButtonNavBar(index);
             },
             items: const [
               BottomNavigationBarItem(icon: Icon(Icons.list), label: 'Tasts'),
@@ -44,19 +42,17 @@ class _HomeViewState extends State<HomeView> {
           ),
           floatingActionButton: FloatingActionButton(
             onPressed: () {
-              if (isBottomSheetShow) {
+              if (appCubit.isBottomSheetShow) {
                 scaffoldKey.currentState!.showBottomSheet((context) {
                   return const TaskSheet();
                 });
-                fabIcon = Icons.add;
-                isBottomSheetShow = false;
+                appCubit.changeBottomSheet(Icons.add, false);
               } else {
                 Navigator.pop(context);
-                fabIcon = Icons.edit;
-                isBottomSheetShow = true;
+                appCubit.changeBottomSheet(Icons.edit, true);
               }
             },
-            child: Icon(fabIcon),
+            child: Icon(appCubit.fabIcon),
           ),
         );
       },

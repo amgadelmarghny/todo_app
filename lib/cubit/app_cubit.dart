@@ -22,10 +22,18 @@ class AppCubit extends Cubit<AppState> {
     const DoneTasks(),
     const ArchiveBody(),
   ];
+  bool isBottomSheetShow = true;
+  IconData fabIcon = Icons.edit;
 
-  void changButtonNavBar(int index) {
+  void changeButtonNavBar(int index) {
     curruntIndex = index;
-    emit(ChangeNavBarState());
+    emit(NavBarState());
+  }
+
+  void changeBottomSheet(IconData iconData, bool isShown) {
+    fabIcon = iconData;
+    isBottomSheetShow = isShown;
+    emit(BottomSheetState());
   }
 
   ///////////////////

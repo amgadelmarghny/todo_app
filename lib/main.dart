@@ -6,7 +6,7 @@ import 'package:todo_app/views/home_view.dart';
 void main() {
   runApp(const TodoApp());
 }
-
+//creat task model and finsh adding logic to cupit
 class TodoApp extends StatelessWidget {
   const TodoApp({super.key});
 
@@ -16,7 +16,7 @@ class TodoApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData.dark(useMaterial3: true),
       home: BlocProvider(
-        create: (context) => AppCubit(),
+        create: (context) => AppCubit()..creatDatabase(),
         child: const HomeView(),
       ),
     );
