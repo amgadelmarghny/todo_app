@@ -14,13 +14,16 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
-
+  GlobalKey<FormState> formKey = GlobalKey();
+  AutovalidateMode autovalidateMode = AutovalidateMode.disabled;
   @override
   Widget build(BuildContext context) {
     AppCubit appCubit = BlocProvider.of<AppCubit>(context);
     return BlocConsumer<AppCubit, AppState>(
       listener: (context, state) {
-        // TODO: implement listener
+        if (state is InsertIntoDatabaseState) {
+          Navigator.pop(context);
+        }
       },
       builder: (context, state) {
         return Scaffold(
@@ -43,13 +46,29 @@ class _HomeViewState extends State<HomeView> {
           floatingActionButton: FloatingActionButton(
             onPressed: () {
               if (appCubit.isBottomSheetShow) {
-                scaffoldKey.currentState!.showBottomSheet((context) {
-                  return const TaskSheet();
-                });
+                scaffoldKey.currentState!
+                    .showBottomSheet((context) {
+                      return TaskSheet(
+                        formKey: formKey,
+                        autovalidateMode: autovalidateMode,
+                      );
+                    })
+                    .closed
+                    .then((value) {
+                      appCubit.changeBottomSheet(Icons.edit, true);
+                    });
                 appCubit.changeBottomSheet(Icons.add, false);
               } else {
-                Navigator.pop(context);
-                appCubit.changeBottomSheet(Icons.edit, true);
+                if (formKey.currentState!.validate()) {
+                  BlocProvider.of<AppCubit>(context).insertIntoDatabase(
+                    title: BlocProvider.of<AppCubit>(context).title!,
+                    time: BlocProvider.of<AppCubit>(context).time!,
+                    date: BlocProvider.of<AppCubit>(context).date!,
+                  );
+                  appCubit.changeBottomSheet(Icons.edit, true);
+                } else {
+                  autovalidateMode = AutovalidateMode.always;
+                }
               }
             },
             child: Icon(appCubit.fabIcon),

@@ -30,16 +30,13 @@ class AppCubit extends Cubit<AppState> {
     emit(NavBarState());
   }
 
-<<<<<<< HEAD
   void changeBottomSheet(IconData iconData, bool isShown) {
     fabIcon = iconData;
     isBottomSheetShow = isShown;
     emit(BottomSheetState());
   }
 
-=======
->>>>>>> b662048b32b1268cfd207fa787442ce91301a088
-  ///////////////////
+  ///////////////////////
   Database? database;
   String? title, time, date;
   List<TaskModel> addTaskModelList = [];
@@ -58,24 +55,30 @@ class AppCubit extends Cubit<AppState> {
         debugPrint('Database created');
       },
       onOpen: (database) {
-        debugPrint('Database opened');
+        debugPrint('Database opened : ${database.toString()}');
+        getFromDatabase(database);
       },
     ).then((value) {
       emit(CreatDatabaseState());
+      return database = value;
     }).catchError((err) {
-      emit(FailurState('Failed to insert into Database : $err'));
-      debugPrint('Failed to insert into Database : $err');
+      emit(FailurState('Failed to Creat into Database : $err'));
+      debugPrint('Failed to Creat into Database : $err');
+      
     });
   }
 
   //Insert some records in a transaction
   void insertIntoDatabase(
-      {required String title, required String time, required String date}) {
-    database!.transaction((txn) async {
+      {required String title,
+      required String time,
+      required String date}) async {
+    await database!.transaction((txn) async {
       await txn.rawInsert(
           'INSERT INTO tasks(title, time, date, status) VALUES("$title", "$time","$date", "new")');
     }).then((value) {
       debugPrint('Database inserted successfully : $value');
+      getFromDatabase(database);
       emit(InsertIntoDatabaseState());
     }).catchError((err) {
       emit(FailurState('Failed to insert into Database : $err'));
@@ -84,7 +87,7 @@ class AppCubit extends Cubit<AppState> {
   }
 
   //Get the tasks
-  void getFromDatabase() {
+  void getFromDatabase(database) {
     database!.rawQuery('SELECT * FROM tasks').then((value) {
       addTaskModelList.clear();
       doneTaskModelList.clear();

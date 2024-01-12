@@ -7,11 +7,14 @@ class CustomTextField extends StatelessWidget {
       this.maxLine = 1,
       required this.hintText,
       this.onSaved,
-      this.onChange});
+      this.onChange,
+      this.onTap, this.textEditingController});
   final int? maxLine;
   final String hintText;
   final void Function(String?)? onSaved;
   final void Function(String)? onChange;
+  final void Function()? onTap;
+  final TextEditingController? textEditingController ;
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +26,8 @@ class CustomTextField extends StatelessWidget {
           return null;
         }
       },
+      controller: textEditingController,
+      onTap: onTap,
       onChanged: onChange,
       onSaved: onSaved,
       maxLines: maxLine,
