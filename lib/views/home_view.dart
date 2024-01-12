@@ -26,6 +26,7 @@ class _HomeViewState extends State<HomeView> {
       },
       builder: (context, state) {
         return Scaffold(
+          key: scaffoldKey,
           appBar: AppBar(
             title: Text(appCubit.titleSceen[appCubit.curruntIndex]),
           ),
