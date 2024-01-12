@@ -49,36 +49,40 @@ class _HomeViewState extends State<HomeView> {
           ),
           floatingActionButton: FloatingActionButton(
             onPressed: () {
-              if (appCubit.isBottomSheetShow) {
-                scaffoldKey.currentState!
-                    .showBottomSheet((context) {
-                      return TaskSheet(
-                        formKey: formKey,
-                        autovalidateMode: autovalidateMode,
-                      );
-                    })
-                    .closed
-                    .then((value) {
-                      appCubit.changeBottomSheet(Icons.edit, true);
-                    });
-                appCubit.changeBottomSheet(Icons.add, false);
-              } else {
-                if (formKey.currentState!.validate()) {
-                  BlocProvider.of<AppCubit>(context).insertIntoDatabase(
-                    title: BlocProvider.of<AppCubit>(context).title!,
-                    time: BlocProvider.of<AppCubit>(context).time!,
-                    date: BlocProvider.of<AppCubit>(context).date!,
-                  );
-                  appCubit.changeBottomSheet(Icons.edit, true);
-                } else {
-                  autovalidateMode = AutovalidateMode.always;
-                }
-              }
+              floatingButtonTapMethod(appCubit, context);
             },
             child: Icon(appCubit.fabIcon),
           ),
         );
       },
     );
+  }
+
+  void floatingButtonTapMethod(AppCubit appCubit, BuildContext context) {
+     if (appCubit.isBottomSheetShow) {
+      scaffoldKey.currentState!
+          .showBottomSheet((context) {
+            return TaskSheet(
+              formKey: formKey,
+              autovalidateMode: autovalidateMode,
+            );
+          })
+          .closed
+          .then((value) {
+            appCubit.changeBottomSheet(Icons.edit, true);
+          });
+      appCubit.changeBottomSheet(Icons.add, false);
+    } else {
+      if (formKey.currentState!.validate()) {
+        BlocProvider.of<AppCubit>(context).insertIntoDatabase(
+          title: BlocProvider.of<AppCubit>(context).title!,
+          time: BlocProvider.of<AppCubit>(context).time!,
+          date: BlocProvider.of<AppCubit>(context).date!,
+        );
+        appCubit.changeBottomSheet(Icons.edit, true);
+      } else {
+        autovalidateMode = AutovalidateMode.always;
+      }
+    }
   }
 }

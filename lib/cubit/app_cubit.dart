@@ -61,6 +61,7 @@ class AppCubit extends Cubit<AppState> {
     ).then((value) {
       emit(CreatDatabaseState());
       return database = value;
+    // ignore: body_might_complete_normally_catch_error
     }).catchError((err) {
       emit(FailurState('Failed to Creat into Database : $err'));
       debugPrint('Failed to Creat into Database : $err');
@@ -77,7 +78,6 @@ class AppCubit extends Cubit<AppState> {
           .rawInsert(
               'INSERT INTO tasks(title, time, date, status) VALUES("$title", "$time","$date", "new")')
           .then((value) {
-        print(database);
         debugPrint('Database inserted successfully : $value');
         emit(InsertIntoDatabaseState());
         getFromDatabase(database);
