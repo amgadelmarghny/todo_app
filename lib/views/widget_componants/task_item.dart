@@ -11,59 +11,66 @@ class TaskItem extends StatelessWidget {
   final TaskModel taskModel;
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        CircleAvatar(
-          radius: 50,
-          child: Text(
-            taskModel.time,
-            style: const TextStyle(fontSize: 20),
-          ),
-        ),
-        const SizedBox(
-          width: 5,
-        ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              taskModel.title,
-              maxLines: 2,
+    return Dismissible(
+      key: Key(taskModel.id.toString()),
+      onDismissed: (direction) {
+        BlocProvider.of<AppCubit>(context)
+            .deleteFromDatabase(id: taskModel.id!);
+      },
+      child: Row(
+        children: [
+          CircleAvatar(
+            radius: 50,
+            child: Text(
+              taskModel.time,
               style: const TextStyle(fontSize: 20),
             ),
-            Text(
-              taskModel.date,
-              style: const TextStyle(
-                fontSize: 15,
-                color: Color(0xFF1B5E20),
+          ),
+          const SizedBox(
+            width: 5,
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                taskModel.title,
+                maxLines: 2,
+                style: const TextStyle(fontSize: 20),
               ),
-            )
-          ],
-        ),
-        const Spacer(),
-        IconButton(
-          onPressed: () {
-            print('iddd : ${taskModel.id}');
-            BlocProvider.of<AppCubit>(context)
-                .updateDatabase(status: 'done', id: taskModel.id!);
-          },
-          icon: const Icon(
-            Icons.check_box_outlined,
-            color: Colors.blue,
+              Text(
+                taskModel.date,
+                style: const TextStyle(
+                  fontSize: 15,
+                  color: Color(0xFF1B5E20),
+                ),
+              )
+            ],
           ),
-        ),
-        IconButton(
-          onPressed: () {
-            print('iddd : ${taskModel.id}');
-            BlocProvider.of<AppCubit>(context)
-                .updateDatabase(status: 'archive', id: taskModel.id!);
-          },
-          icon: const Icon(
-            Icons.archive_outlined,
-            color: Colors.white54,
+          const Spacer(),
+          IconButton(
+            onPressed: () {
+              print('iddd : ${taskModel.id}');
+              BlocProvider.of<AppCubit>(context)
+                  .updateDatabase(status: 'done', id: taskModel.id!);
+            },
+            icon: const Icon(
+              Icons.check_box_outlined,
+              color: Colors.blue,
+            ),
           ),
-        ),
-      ],
+          IconButton(
+            onPressed: () {
+              print('iddd : ${taskModel.id}');
+              BlocProvider.of<AppCubit>(context)
+                  .updateDatabase(status: 'archive', id: taskModel.id!);
+            },
+            icon: const Icon(
+              Icons.archive_outlined,
+              color: Colors.white54,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

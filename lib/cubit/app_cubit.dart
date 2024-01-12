@@ -94,11 +94,9 @@ class AppCubit extends Cubit<AppState> {
     doneTaskModelList.clear();
     archiveTaskModelList.clear();
     database!.rawQuery('SELECT * FROM tasks').then((value) {
-      print(value);
       for (var list in value) {
         if (list['status'] == 'new') {
           addTaskModelList.add(TaskModel.fromSQflite(list));
-          print('idddd::: ${addTaskModelList[0].id}');
         } else if (list['status'] == 'done') {
           doneTaskModelList.add(TaskModel.fromSQflite(list));
         } else {
