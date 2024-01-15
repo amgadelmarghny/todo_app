@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:todo_app/componants/floating_button_method.dart';
 import 'package:todo_app/componants/snack_bar.dart';
 import 'package:todo_app/cubit/app_cubit.dart';
-import 'package:todo_app/views/widget_componants/task_sheet.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({
@@ -29,6 +29,7 @@ class _HomeViewState extends State<HomeView> {
           customSnackBar(context: context, text: state.err);
         }
       },
+      //3-9-1989
       builder: (context, state) {
         return Scaffold(
           key: scaffoldKey,
@@ -37,52 +38,20 @@ class _HomeViewState extends State<HomeView> {
           ),
           body: appCubit.bodyScreens[appCubit.curruntIndex],
           bottomNavigationBar: BottomNavigationBar(
+            currentIndex: appCubit.curruntIndex,
+            type: BottomNavigationBarType.fixed,
+            selectedItemColor: Colors.blue,
             onTap: (index) {
               appCubit.changeButtonNavBar(index);
             },
-            items: const [
-              BottomNavigationBarItem(icon: Icon(Icons.list), label: 'Tasts'),
-              BottomNavigationBarItem(icon: Icon(Icons.done), label: 'Done'),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.archive_outlined), label: 'archive'),
-            ],
+            items: appCubit.buttomIcons,
           ),
-          floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              floatingButtonTapMethod(appCubit, context);
-            },
-            child: Icon(appCubit.fabIcon),
+          floatingActionButton: CustomFloatingActionButton(
+            formKey: formKey,
+            scaffoldKey: scaffoldKey,
           ),
         );
       },
     );
-  }
-
-  void floatingButtonTapMethod(AppCubit appCubit, BuildContext context) {
-     if (appCubit.isBottomSheetShow) {
-      scaffoldKey.currentState!
-          .showBottomSheet((context) {
-            return TaskSheet(
-              formKey: formKey,
-              autovalidateMode: autovalidateMode,
-            );
-          })
-          .closed
-          .then((value) {
-            appCubit.changeBottomSheet(Icons.edit, true);
-          });
-      appCubit.changeBottomSheet(Icons.add, false);
-    } else {
-      if (formKey.currentState!.validate()) {
-        BlocProvider.of<AppCubit>(context).insertIntoDatabase(
-          title: BlocProvider.of<AppCubit>(context).title!,
-          time: BlocProvider.of<AppCubit>(context).time!,
-          date: BlocProvider.of<AppCubit>(context).date!,
-        );
-        appCubit.changeBottomSheet(Icons.edit, true);
-      } else {
-        autovalidateMode = AutovalidateMode.always;
-      }
-    }
   }
 }

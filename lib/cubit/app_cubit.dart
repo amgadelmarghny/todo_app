@@ -22,6 +22,12 @@ class AppCubit extends Cubit<AppState> {
     const DoneTasks(),
     const ArchiveBody(),
   ];
+  List<BottomNavigationBarItem> buttomIcons = const [
+    BottomNavigationBarItem(icon: Icon(Icons.list), label: 'Tasts'),
+    BottomNavigationBarItem(icon: Icon(Icons.done), label: 'Done'),
+    BottomNavigationBarItem(
+        icon: Icon(Icons.archive_outlined), label: 'archive')
+  ];
   bool isBottomSheetShow = true;
   IconData fabIcon = Icons.edit;
 
@@ -61,7 +67,7 @@ class AppCubit extends Cubit<AppState> {
     ).then((value) {
       emit(CreatDatabaseState());
       return database = value;
-    // ignore: body_might_complete_normally_catch_error
+      // ignore: body_might_complete_normally_catch_error
     }).catchError((err) {
       emit(FailurState('Failed to Creat into Database : $err'));
       debugPrint('Failed to Creat into Database : $err');
@@ -117,7 +123,6 @@ class AppCubit extends Cubit<AppState> {
       [status, id],
     ).then((value) {
       getFromDatabase(database);
-      emit(UpdateDatabaseState());
     }).catchError((err) {
       emit(FailurState('Error when update task : $err'));
     });
@@ -125,7 +130,6 @@ class AppCubit extends Cubit<AppState> {
 
   void deleteFromDatabase({required int id}) {
     database!.rawDelete('DELETE FROM tasks WHERE id = ?', [id]).then((value) {
-      emit(DeletFromDatabaseState());
       getFromDatabase(database);
     }).catchError((err) {
       emit(FailurState('Error when delet task : $err'));
